@@ -24,6 +24,7 @@ class AlienInvasion:
             self.ship.update()
             #删除已经消失的子弹
             self._update_bullets()
+            self._update_aliens()
             self._update_screen()
             self.clock.tick(240)
     def _check_events(self):
@@ -62,6 +63,10 @@ class AlienInvasion:
         for bullet in self.bullets.copy():
             if bullet.rect.bottom<=0:
                 self.bullets.remove(bullet)
+    def _update_aliens(self):
+        '''更新外星舰队中所有外星人的位置'''
+        self._check_fleet_edges()
+        self.aliens.update()
     def _create_fleet(self):
         '''创建外形舰队'''
         #创建外星人,再不断添加，直到没有空间
@@ -84,7 +89,17 @@ class AlienInvasion:
         new_alien.rect.x=x_position
         new_alien.rect.y=y_position
         self.aliens.add(new_alien)
-        
+    def _check_fleet_edges(self):
+        '''有外星人触边时采取相应措施'''
+        for alien in self.aliens.sprites():
+            if alien.check_edges():
+                self._change_fleet_direction()
+                break
+    def _change_fleet_direction(self):
+        '''将整个外星舰队向下移动，并改变它们的方向'''
+        for alien in self.aliens.sprites():
+            alien.rect.y+=self.settings.fleet_drop_speed
+        self.settings.fleet_direction*=-1
     def _update_screen(self):
         '''更新屏幕图像并切换到新屏幕'''
         self.screen.fill(self.settings.bg_color)
