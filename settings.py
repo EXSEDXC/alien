@@ -7,12 +7,12 @@ class Settings:
         self.screen_height=800
         self.bg_color=(233,233,233)
         #飞船设置
-        self.ship_limit=0
+        self.ship_limit=4
         #子弹设置
-        self.bullet_width=3000
+        self.bullet_width=5
         self.bullet_height=15
         self.bullet_color=(60,50,60)
-        self.bullet_allowed=300
+        self.bullet_allowed=5
         #外星人设置
         self.fleet_drop_speed=10
         
@@ -23,7 +23,7 @@ class Settings:
         self.initialize_dynamic_settings()
     def initialize_dynamic_settings(self):
         '''初始化随游戏进行而变化的设置'''
-        self.ship_speed=1.5
+        self.ship_speed=2
         self.bullet_speed=2.5
         self.alien_speed=1.0
         #fleet_direction为1表示向右移动，为-1表示向左移动
