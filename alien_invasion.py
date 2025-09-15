@@ -2,12 +2,14 @@ from settings import Settings
 from time import sleep
 import pygame
 import sys 
+import os
 from ship import Ship
 from bullet import Bullet
 from alien import Alien
 from game_stats import GameStats
 from button import Button
 from scoreboard import Scoreboard
+
 class AlienInvasion:
     '''管理游戏资源和行为的类'''
     def __init__(self):

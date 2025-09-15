@@ -1,5 +1,6 @@
 import pygame
 from pygame.sprite import Sprite
+from utils import get_embedded_image
 class Ship(Sprite):
     '''管理飞船的类'''
     def __init__(self,ai_game):
@@ -9,7 +10,7 @@ class Ship(Sprite):
         self.settings=ai_game.settings
         self.screen_rect=ai_game.screen.get_rect()
         #加载飞船图像并获取其外接矩形
-        self.image=pygame.image.load('images/ship.png')
+        self.image = pygame.image.load(get_embedded_image("ship.png"))
         self.rect=self.image.get_rect()
         #每艘新飞船放在屏幕底部的中央
         self.rect.midbottom=self.screen_rect.midbottom
