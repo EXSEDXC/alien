@@ -8,6 +8,7 @@ from bullet import Bullet
 from alien import Alien
 from game_stats import GameStats
 from button import Button
+from scoreboard import Scoreboard
 class AlienInvasion:
     '''管理游戏资源和行为的类'''
     def __init__(self):
@@ -17,8 +18,10 @@ class AlienInvasion:
         self.settings=Settings()
         self.screen=pygame.display.set_mode((self.settings.screen_width,self.settings.screen_height))
         pygame.display.set_caption('Alien Invasion')
-        #创建一个用于储存游戏统计信息的实例
+        #创建一个用于储存游戏统计信息的实例并创建记分牌
+        
         self.stats=GameStats(self)
+        self.sb=Scoreboard(self)
         self.ship=Ship(self)
         self.bullets=pygame.sprite.Group()
         self.aliens=pygame.sprite.Group()
@@ -26,6 +29,7 @@ class AlienInvasion:
         self.game_active=False
         #创建play按钮
         self.play_button=Button(self,'Play')
+        
     def run_game(self):
         '''开始游戏的主循环'''
         while 1:
@@ -54,7 +58,9 @@ class AlienInvasion:
         button_clicked = self.play_button.rect.collidepoint(mouse_pos)
         if button_clicked and not self.game_active:
             #重置游戏信息
+            self.settings.initialize_dynamic_settings()
             self.stats.reset_stats()
+            self.sb.prep_score()
             self.game_active=True
             #清空外星人列表和子弹列表
             self.bullets.empty()
@@ -99,10 +105,16 @@ class AlienInvasion:
         '''响应子弹和外星人的碰撞'''
         #删除发生碰撞的子弹和外星人
         collisions=pygame.sprite.groupcollide(self.bullets,self.aliens,False,True)
+        if collisions:
+            for aliens in collisions.values():
+                self.stats.score+=self.settings.alien_points*len(aliens)
+            self.sb.prep_score()
+            self.sb.check_high_score()
         if not self.aliens:
             #删除现有的子弹并创建一个新的外星舰队
             self.bullets.empty()
             self._create_fleet()
+            self.settings.increase_speed()
     def _update_aliens(self):
         '''更新外星舰队中所有外星人的位置'''
         self._check_fleet_edges()
@@ -175,6 +187,8 @@ class AlienInvasion:
             bullet.draw_bullet()
         self.ship.blitme()
         self.aliens.draw(self.screen)
+        #显示得分
+        self.sb.show_score()
         #如果游戏处于非活动状态就绘制play按钮
         if not self.game_active:
             self.play_button.draw_button()
